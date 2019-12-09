@@ -1,22 +1,60 @@
 const { ApolloServer } = require('apollo-server');
 
 const typeDefs = `
+    type User {
+        githubLogin: ID!
+        name: String
+        avatar: String
+        postedPhotos: [Photo!]!
+    }
+
+    enum PhotoCategory {
+        SELFIE
+        PORTRAIT
+        ACTION
+        LANDSCAPE
+        GRAPHIC
+    }
+
     type Photo {
         id: ID!
         url: String!
         name: String!
         description: String
+        category: PhotoCategory!
+        postedBy: User!
     }
+
+    input PostPhotoInput {
+        name: String!
+        category: PhotoCategory=PORTRAIT
+        description: String
+    }
+
     type Query {
         totalPhotos: Int!
         allPhotos: [Photo!]!
     }
 
     type Mutation {
-        postPhoto(name: String! description: String): Photo!
+        postPhoto(input: PostPhotoInput): Photo!
     }
 `
 let _id = 0;
+let users= [
+    {
+        githubLogin: 'mHattrup',
+        name: 'Mike Hattrup'
+    },
+    {
+        githubLogin: 'gPlake',
+        name: 'Glen Plake'
+    },
+    {
+        githubLogin: 'sSchmidt',
+        name: 'Scot Schmidt'
+    },
+]
 let photos = [];
 
 const resolvers = {
@@ -28,7 +66,7 @@ const resolvers = {
         postPhoto (parent, args) {
             let newPhoto = {
                 id: _id++,
-                ...args
+                ...args.input
             }
             photos.push(newPhoto)
             return newPhoto;
