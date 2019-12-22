@@ -41,6 +41,8 @@ const typeDefs = `
     }
 `
 let _id = 0;
+
+// 샘플 데이터
 let users= [
     {
         githubLogin: 'mHattrup',
@@ -55,7 +57,29 @@ let users= [
         name: 'Scot Schmidt'
     },
 ]
-let photos = [];
+let photos = [
+    {
+        id: '1',
+        name: 'hidkekekk',
+        description: 'dkdkdkdkdkfnenf',
+        category: 'ACTION',
+        githubUser: 'gPlake',
+    },
+    {
+        id: '2',
+        name: 'sjkfneknwfk',
+        description: 'kewjfkwjfk3k',
+        category: 'SELFIE',
+        githubUser: 'sSchmidt',
+    },
+    {
+        id: '3',
+        name: 'kewfkwejflk',
+        description: 'jfewnfjnj33fj',
+        category: 'LANDSCAPE',
+        githubUser: 'sSchmidt',
+    },
+];
 
 const resolvers = {
     Query: {
@@ -73,7 +97,15 @@ const resolvers = {
         }
     },
     Photo: {
-        url: parent => `https://yoursite.com/img/${parent.id}.jpg`
+        url: parent => `https://yoursite.com/img/${parent.id}.jpg`,
+        postedBy: parent => {
+            return users.find(u => u.githubLogin === parent.githubUser)
+        }
+    },
+    User: {
+        postedPhotos: parent => {
+            return photos.filter(p => p.githubUser === parent.githubLogin)
+        }
     }
 }
 
@@ -82,3 +114,10 @@ const server = new ApolloServer({
 })
 
 server.listen().then(({url}) => console.log(`GraphQL Service running on ${url}`))
+
+
+let person = { name: 'jacob'};
+console.log(person.name);
+console.log(person.age);
+
+
